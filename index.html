@@ -170,6 +170,7 @@
 		<script type="text/javascript">
 
 			const URL = 'https://teachablemachine.withgoogle.com/models/ow6Ayj4KF/';
+		// <!-- ------------------------------------------------------------------------------------------------ -->
 
 			let model, webcam, labelContainer, maxPredictions;
 
@@ -188,23 +189,50 @@
 			async function predict() {
 				var iamge = document.getElementById('animal-image');
 				const prediction = await model.predict(iamge, false);
-			prediction.sort((a,b)=> parseFloat(b.probability)-parseFloat(a.probability))
+				prediction.sort((a,b)=> parseFloat(b.probability)-parseFloat(a.probability))
 				console.log(prediction[0].className);
-				var resultMessege;
-
-				resultMessege="반려견의 종은 "+prediction[0].className+"입니다."
-				
+				var resultMessege;				
 					$('.result-Messege').html(resultMessege)
 				
-				 for (let i = 0; i < maxPredictions; i++) {
-					 if(prediction[i].probability.toFixed(2)>0){
-				 	const classPrediction =
-						 prediction[i].className + ': ' + prediction[i].probability.toFixed(2)*100 + '%';
-					 labelContainer.childNodes[i].innerHTML = classPrediction;}
-					 else
-					 pass
-				 }
-			}
+            var barWidth;
+            for (let i = 0; i < maxPredictions; i++) {
+                if (prediction[i].probability.toFixed(2) > 0.1) {
+                    barWidth = Math.round(prediction[i].probability.toFixed(2) * 100) + "%";
+                } else if (prediction[i].probability.toFixed(2) >= 0.01) {
+                    barWidth = "4%"
+                } else {
+                    barWidth = "2%"
+				}
+				if(prediction[i].probability.toFixed(2)>0){
+                var labelTitle = prediction[i].className;
+                var label = "<div class='animal-label d-flex align-items-center'>" + labelTitle+"</div>"
+                var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+                labelContainer.childNodes[i].innerHTML = label + bar;}
+            }
+
+
+
+
+
+
+
+
+				//  for (let i = 0; i < maxPredictions; i++) {
+				// 	 if(prediction[i].probability.toFixed(2)>0){
+				//  	const classPrediction =
+				// 		 prediction[i].className + ': ' + prediction[i].probability.toFixed(2)*100 + '%';
+				// 	 labelContainer.childNodes[i].innerHTML = classPrediction;
+
+				// 	 var labelTitle = prediction[i].className;
+               	//  var label = "<div class='animal-label d-flex align-items-center'>" + labelTitle + "</div>"
+              	// 	  var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+              	// 	  labelContainer.childNodes[i].innerHTML = label + bar;}
+
+				// 	  else
+				// 	 pass
+				 
+		}
+			
 		</script>
 	</body>
 	<!-- Copyright (c) 2021 by Aaron Vanston (https://codepen.io/aaronvanston/pen/yNYOXR)
